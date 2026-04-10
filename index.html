@@ -53,7 +53,9 @@ function App(){
   const subtotal=cartItems.reduce((s,i)=>s+i.price*i.quantity,0);
   const totalFeeds=cartItems.reduce((s,i)=>s+i.feeds*i.quantity,0);
   const deliveryFee=distResult&&distResult.fee!==null?distResult.fee:0;
-  const total=subtotal+deliveryFee;
+  const preTax=subtotal+deliveryFee;
+  const tax=Math.round(preTax*10.25)/100;
+  const total=+(preTax+tax).toFixed(2);
   const cartEmpty=cartItems.length===0;
 
   function setQty(id,q){setCart(prev=>({...prev,[id]:Math.max(0,Math.min(10,q))}))}
@@ -94,9 +96,9 @@ function App(){
     const chosenDate=new Date(deliveryDate+"T12:00:00");
     const dateStr=chosenDate.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
     const fullAddr=address+", "+city+", "+state+" "+zip;
-    const orderNote=["PARTY KIT ORDER",...cartItems.map(i=>i.name+" x"+i.quantity+" ($"+(i.price*i.quantity)+")"),"Delivery: $"+deliveryFee+" ("+distResult.label+", "+distResult.miles+" mi driving)","Total: $"+total,"Date: "+dateStr,"Customer: "+name+" | "+phone+" | "+email,"Address: "+fullAddr,notes?"Notes: "+notes:""].filter(Boolean).join(" | ");
+    const orderNote=["PARTY KIT ORDER",...cartItems.map(i=>i.name+" x"+i.quantity+" ($"+(i.price*i.quantity)+")"),"Delivery: $"+deliveryFee+" ("+distResult.label+", "+distResult.miles+" mi driving)","Tax (10.25%): $"+tax.toFixed(2),"Total: $"+total.toFixed(2),"Date: "+dateStr,"Customer: "+name+" | "+phone+" | "+email,"Address: "+fullAddr,notes?"Notes: "+notes:""].filter(Boolean).join(" | ");
     try{
-      const resp=await fetch("/api/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items:cartItems.map(i=>({name:i.name,feeds:i.feeds,price:i.price,quantity:i.quantity})),deliveryFee,deliveryTierLabel:distResult.label+" — "+distResult.miles+" mi",dateStr,orderNote,email,phone})});
+      const resp=await fetch("/api/create-checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items:cartItems.map(i=>({name:i.name,feeds:i.feeds,price:i.price,quantity:i.quantity})),deliveryFee,deliveryTierLabel:distResult.label+" — "+distResult.miles+" mi",dateStr,orderNote,email,phone,totalWithTax:total})});
       const data=await resp.json();
       if(data.url){setCheckoutUrl(data.url);setStep(3)}
       else{setError("Couldn't create checkout. "+(data.details?data.details[0].detail:"Please try again."))}
@@ -194,8 +196,9 @@ function App(){
             {deliveryDate&&distResult&&distResult.fee!==null&&(
               <div style={S.card}>
                 {cartItems.map(i=>(<div key={i.id} style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:15,color:"#555"}}>{i.name}{i.quantity>1?" × "+i.quantity:""}</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${i.price*i.quantity}</span></div>))}
-                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:15,color:"#555"}}>Delivery ({distResult.label})</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${deliveryFee}</span></div>
-                <div style={{borderTop:"1px solid #d4cfc0",paddingTop:6,display:"flex",justifyContent:"space-between"}}><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>Total</span><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>${total}</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:15,color:"#555"}}>Delivery ({distResult.label})</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${deliveryFee}</span></div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:15,color:"#555"}}>Tax (10.25%)</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${tax.toFixed(2)}</span></div>
+                <div style={{borderTop:"1px solid #d4cfc0",paddingTop:6,display:"flex",justifyContent:"space-between"}}><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>Total</span><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>${total.toFixed(2)}</span></div>
                 <div style={{fontSize:15,color:"#E8716A",fontWeight:600,marginTop:6}}>Delivery: {new Date(deliveryDate+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</div>
               </div>
             )}
@@ -226,8 +229,9 @@ function App(){
             <div style={{...S.card,marginBottom:24,textAlign:"left"}}>
               {cartItems.map(i=>(<div key={i.id} style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:15,color:"#555"}}>{i.name}{i.quantity>1?" × "+i.quantity:""}</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${i.price*i.quantity}</span></div>))}
               <div style={{fontSize:14,color:"#555",marginBottom:2}}>Feeds {totalFeeds} people</div>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:15,color:"#555"}}>Delivery ({distResult.label})</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${deliveryFee}</span></div>
-              <div style={{borderTop:"1px solid #d4cfc0",paddingTop:6,display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>Total</span><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>${total}</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}><span style={{fontSize:15,color:"#555"}}>Delivery ({distResult.label})</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${deliveryFee}</span></div>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:15,color:"#555"}}>Tax (10.25%)</span><span style={{fontSize:15,color:"#2D3561",fontWeight:600}}>${tax.toFixed(2)}</span></div>
+              <div style={{borderTop:"1px solid #d4cfc0",paddingTop:6,display:"flex",justifyContent:"space-between",marginBottom:6}}><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>Total</span><span style={{fontSize:18,fontWeight:700,color:"#2D3561"}}>${total.toFixed(2)}</span></div>
               <div style={{fontSize:14,color:"#E8716A",fontWeight:600}}>Delivery: {new Date(deliveryDate+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div>
               <div style={{fontSize:13,color:"#777",marginTop:4}}>{address}, {city}, {state} {zip}</div>
             </div>
@@ -240,7 +244,7 @@ function App(){
 
         {step<3&&(<div style={{display:"flex",gap:10,marginTop:20}}>
           {step>0&&<button onClick={goBack} disabled={submitting} style={S.btnB}>← Back</button>}
-          <button onClick={goNext} disabled={submitting} style={S.btnP(submitting)}>{submitting?"Creating order...":step===2?"Checkout — $"+total:"Continue →"}</button>
+          <button onClick={goNext} disabled={submitting} style={S.btnP(submitting)}>{submitting?"Creating order...":step===2?"Checkout — $"+total.toFixed(2):"Continue →"}</button>
         </div>)}
 
         <div style={{textAlign:"center",marginTop:28,paddingTop:16,borderTop:"1px solid #d4cfc0"}}><p style={{fontSize:13,color:"#999",margin:0,lineHeight:1.5}}>Questions? Text or call us.<br/>Delivery available in the Chicagoland area.</p></div>
