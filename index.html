@@ -78,6 +78,7 @@ function App(){
     if(step===0){if(cartEmpty){setError("Add at least one kit to your order.");return}setStep(1)}
     else if(step===1){
       if(!deliveryDate||new Date(deliveryDate+"T00:00:00")<minDate){setError("Pick a delivery date at least 24 hours from now.");return}
+      if(new Date(deliveryDate+"T00:00:00").getDay()===0){setError("Sorry, we don't deliver on Sundays. Please pick another day.");return}
       if(!address.trim()||!city.trim()||!zip.trim()){setError("Enter your full delivery address.");return}
       if(!distResult){setError("Click 'Calculate Delivery Fee' to check your delivery distance.");return}
       if(distResult.fee===null){setError("Sorry, we can't deliver beyond 50 miles. Contact us for options.");return}
@@ -169,7 +170,8 @@ function App(){
             <h2 style={S.h2}>Delivery Details</h2>
             <p style={{fontSize:14,color:"#777",margin:"0 0 16px",textAlign:"center"}}>24-hour advance notice required. Chicagoland area only.</p>
             <label style={S.label}>Delivery Date</label>
-            <input type="date" value={deliveryDate} min={minDateStr} onChange={e=>setDeliveryDate(e.target.value)} style={S.input}/>
+            <input type="date" value={deliveryDate} min={minDateStr} onChange={e=>{setDeliveryDate(e.target.value);if(new Date(e.target.value+"T00:00:00").getDay()===0)setError("Sorry, we don't deliver on Sundays. Please pick another day.");else setError("")}} style={S.input}/>
+            <p style={{fontSize:12,color:"#999",marginTop:4}}>No Sunday deliveries</p>
             <label style={{...S.label,marginTop:16}}>Street Address</label>
             <input type="text" value={address} placeholder="123 Main St, Apt 4" onChange={e=>{setAddress(e.target.value);setDistResult(null)}} style={S.input}/>
             <div style={{display:"flex",gap:10,marginTop:12}}>
