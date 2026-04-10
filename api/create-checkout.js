@@ -15,7 +15,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Build a single line item name
     const itemDesc = items.map(i => i.name + " x" + i.quantity + " (feeds " + (i.feeds * i.quantity) + ")").join(" + ");
     const totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0) + (deliveryFee || 0);
     const fullName = "Party Kit: " + itemDesc + (deliveryFee > 0 ? " + Delivery" : "") + " — " + dateStr;
@@ -41,7 +40,12 @@ export default async function handler(req, res) {
     if (email || phone) {
       squareBody.pre_populated_data = {};
       if (email) squareBody.pre_populated_data.buyer_email = email;
-      if (phone) squareBody.pre_populated_data.buyer_phone_number = phone;
+      if (phone) {
+        let cleanPhone = phone.replace(/[^0-9]/g, "");
+        if (cleanPhone.length === 10) cleanPhone = "1" + cleanPhone;
+        if (!cleanPhone.startsWith("+")) cleanPhone = "+" + cleanPhone;
+        squareBody.pre_populated_data.buyer_phone_number = cleanPhone;
+      }
     }
 
     console.log("Calling Square API with token starting:", SQUARE_TOKEN.substring(0, 10) + "...");
