@@ -9,15 +9,14 @@ export default async function handler(req, res) {
   if (!SQUARE_TOKEN) return res.status(500).json({ error: "Server config error: missing SQUARE_ACCESS_TOKEN" });
 
   try {
-    const { items, deliveryFee, deliveryTierLabel, dateStr, orderNote, email, phone } = req.body;
+    const { items, deliveryFee, deliveryTierLabel, dateStr, orderNote, email, phone, totalWithTax } = req.body;
 
     if (!items || !items.length || !dateStr) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     const itemDesc = items.map(i => i.name + " x" + i.quantity + " (feeds " + (i.feeds * i.quantity) + ")").join(" + ");
-    const totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0) + (deliveryFee || 0);
-    const fullName = "Party Kit: " + itemDesc + (deliveryFee > 0 ? " + Delivery" : "") + " — " + dateStr;
+    const fullName = "Party Kit: " + itemDesc + (deliveryFee > 0 ? " + Delivery" : "") + " + Tax — " + dateStr;
 
     const idempotencyKey = "pk-" + Date.now() + "-" + Math.random().toString(36).substr(2, 9);
 
@@ -26,7 +25,7 @@ export default async function handler(req, res) {
       quick_pay: {
         name: fullName.substring(0, 250),
         price_money: {
-          amount: totalAmount * 100,
+          amount: Math.round(totalWithTax * 100),
           currency: "USD",
         },
         location_id: "LAZBMZE47YGJ1",
