@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       else if (miles <= 50) { fee = 40; label = "31–50 mi"; }
       else { fee = null; label = "50+ mi"; }
 
-      return res.status(200).json({ miles, fee, label, distText, duration });
+      return res.status(200).json({ miles, fee, label, distText, duration, resolvedAddress: data.destination_addresses[0] });
     } else {
       const errMsg = data.rows?.[0]?.elements?.[0]?.status || data.status || "Unknown error";
       return res.status(400).json({ error: "Couldn't calculate distance: " + errMsg });
