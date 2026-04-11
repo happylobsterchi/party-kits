@@ -240,12 +240,12 @@ function App(){
             <p style={{fontSize:12,color:C.textMuted,marginTop:4,marginBottom:16}}>No Sunday deliveries</p>
 
             <label style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:12,color:C.navy,letterSpacing:"0.1em",textTransform:"uppercase",display:"block",marginBottom:6}}>Street Address</label>
-            <input type="text" value={address} placeholder="123 Main St, Apt 4" onChange={e=>{setAddress(e.target.value);setDistResult(null)}} style={{...inputStyle,marginBottom:14}}/>
+            <input type="text" value={address}  onChange={e=>{setAddress(e.target.value);setDistResult(null)}} style={{...inputStyle,marginBottom:14}}/>
 
             <div style={{display:"flex",gap:10,marginBottom:14}}>
               <div style={{flex:2}}>
                 <label style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:12,color:C.navy,letterSpacing:"0.1em",textTransform:"uppercase",display:"block",marginBottom:6}}>City</label>
-                <input value={city} onChange={e=>{setCity(e.target.value);setDistResult(null)}} placeholder="Chicago" style={inputStyle}/>
+                <input value={city} onChange={e=>{setCity(e.target.value);setDistResult(null)}}  style={inputStyle}/>
               </div>
               <div style={{flex:0.7}}>
                 <label style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:12,color:C.navy,letterSpacing:"0.1em",textTransform:"uppercase",display:"block",marginBottom:6}}>State</label>
@@ -253,7 +253,7 @@ function App(){
               </div>
               <div style={{flex:1}}>
                 <label style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:12,color:C.navy,letterSpacing:"0.1em",textTransform:"uppercase",display:"block",marginBottom:6}}>Zip</label>
-                <input value={zip} onChange={e=>{setZip(e.target.value);setDistResult(null)}} placeholder="60608" maxLength={5} style={inputStyle}/>
+                <input value={zip} onChange={e=>{setZip(e.target.value);setDistResult(null)}}  maxLength={5} style={inputStyle}/>
               </div>
             </div>
 
@@ -265,6 +265,11 @@ function App(){
 
             {distResult&&(
               <div style={{marginTop:14,padding:"14px 18px",background:distResult.fee!==null?"#f0fdf4":"#fef2f2",borderRadius:10,border:distResult.fee!==null?"1px solid #bbf7d0":"1px solid #fecaca"}}>
+                {distResult.resolvedAddress&&(
+                  <div style={{fontSize:13,color:C.textMuted,marginBottom:8,paddingBottom:8,borderBottom:"1px solid "+(distResult.fee!==null?"#bbf7d0":"#fecaca")}}>
+                    <span style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:11,letterSpacing:"0.08em",textTransform:"uppercase",color:C.navy}}>Delivering to: </span>{distResult.resolvedAddress}
+                  </div>
+                )}
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                   <div><span style={{fontSize:15,fontWeight:600,color:C.navy}}>{distResult.miles} miles</span><span style={{fontSize:13,color:C.textMuted}}> · {distResult.duration} drive</span></div>
                   <span style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:14,fontWeight:400,color:distResult.fee!==null?C.navy:"#b91c1c",letterSpacing:"0.05em",textTransform:"uppercase"}}>{distResult.fee!==null?"+$"+distResult.fee:"Not Available"}</span>
@@ -293,7 +298,7 @@ function App(){
             ))}
             <div style={{marginBottom:14}}>
               <label style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:12,color:C.navy,letterSpacing:"0.1em",textTransform:"uppercase",display:"block",marginBottom:6}}>Special Instructions <span style={{fontWeight:400,color:C.textMuted,textTransform:"none",letterSpacing:0,fontFamily:"'Cormorant'"}}>(optional)</span></label>
-              <textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={2} placeholder="Gate code, delivery window, etc." style={{...inputStyle,resize:"none"}}/>
+              <textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={2}  style={{...inputStyle,resize:"none"}}/>
             </div>
 
             <OrderSummary showDate={true} showAddr={true}/>
