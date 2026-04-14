@@ -117,13 +117,16 @@ function App(){
   useEffect(()=>{
     if(containerRef.current){
       containerRef.current.scrollTo({top:0});
-      setTimeout(()=>{
+      const sendResize=()=>{
         const h=document.getElementById('root').scrollHeight;
         window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-        setTimeout(()=>{
-          window.parent.postMessage({type:'pk-scroll-top'},'*');
-        },200);
-      },150);
+      };
+      sendResize();
+      setTimeout(sendResize,100);
+      setTimeout(sendResize,300);
+      setTimeout(()=>{
+        window.parent.postMessage({type:'pk-scroll-top'},'*');
+      },350);
     }
   },[step]);
   useEffect(()=>{
