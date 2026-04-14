@@ -114,7 +114,24 @@ function App(){
     finally{setSubmitting(false)}
   }
 
-  useEffect(()=>{if(containerRef.current)containerRef.current.scrollTo({top:0,behavior:"smooth"})},[step]);
+  useEffect(()=>{
+    if(containerRef.current){
+      containerRef.current.scrollTo({top:0,behavior:"smooth"});
+      window.parent.postMessage({type:'pk-scroll-top'},'*');
+      setTimeout(()=>{
+        const h=document.getElementById('root').scrollHeight;
+        window.parent.postMessage({type:'pk-resize',height:h+40},'*');
+      },150);
+    }
+  },[step]);
+  useEffect(()=>{
+    const resizeObs=new ResizeObserver(()=>{
+      const h=document.getElementById('root').scrollHeight;
+      window.parent.postMessage({type:'pk-resize',height:h+40},'*');
+    });
+    resizeObs.observe(document.getElementById('root'));
+    return ()=>resizeObs.disconnect();
+  },[]);
 
   // ── STYLES matching Webflow Menu Types template ──
   const C={
@@ -170,7 +187,7 @@ function App(){
   const inputStyle={width:"100%",padding:"14px 16px",borderRadius:10,border:"1px solid "+C.borderGray,background:"#fff",fontSize:16,color:C.navy,outline:"none"};
 
   return(
-    <div ref={containerRef} style={{minHeight:"100vh",background:"#fff",overflowY:"auto"}}>
+    <div ref={containerRef} style={{background:"#fff",overflowY:"auto"}}>
 
 
 
