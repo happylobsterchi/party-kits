@@ -117,15 +117,11 @@ function App(){
   useEffect(()=>{
     if(containerRef.current){
       containerRef.current.scrollTo({top:0});
-      window.parent.postMessage({type:'pk-scroll-top'},'*');
-      setTimeout(()=>{
-        const h=document.getElementById('root').scrollHeight;
-        window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-      },50);
-      setTimeout(()=>{
-        const h=document.getElementById('root').scrollHeight;
-        window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-      },200);
+      const sendH=()=>{const h=document.getElementById('root').scrollHeight;window.parent.postMessage({type:'pk-resize',height:h+40},'*')};
+      sendH();
+      setTimeout(sendH,100);
+      setTimeout(sendH,250);
+      setTimeout(()=>{sendH();window.parent.postMessage({type:'pk-scroll-top'},'*')},400);
     }
   },[step]);
   useEffect(()=>{
