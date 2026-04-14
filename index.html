@@ -116,12 +116,14 @@ function App(){
 
   useEffect(()=>{
     if(containerRef.current){
-      containerRef.current.scrollTo({top:0,behavior:"smooth"});
-      window.parent.postMessage({type:'pk-scroll-top'},'*');
+      containerRef.current.scrollTo({top:0});
       setTimeout(()=>{
         const h=document.getElementById('root').scrollHeight;
         window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-      },150);
+        setTimeout(()=>{
+          window.parent.postMessage({type:'pk-scroll-top'},'*');
+        },50);
+      },100);
     }
   },[step]);
   useEffect(()=>{
