@@ -117,16 +117,15 @@ function App(){
   useEffect(()=>{
     if(containerRef.current){
       containerRef.current.scrollTo({top:0});
-      const sendResize=()=>{
+      window.parent.postMessage({type:'pk-scroll-top'},'*');
+      setTimeout(()=>{
         const h=document.getElementById('root').scrollHeight;
         window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-      };
-      sendResize();
-      setTimeout(sendResize,100);
-      setTimeout(sendResize,300);
+      },50);
       setTimeout(()=>{
-        window.parent.postMessage({type:'pk-scroll-top'},'*');
-      },350);
+        const h=document.getElementById('root').scrollHeight;
+        window.parent.postMessage({type:'pk-resize',height:h+40},'*');
+      },200);
     }
   },[step]);
   useEffect(()=>{
