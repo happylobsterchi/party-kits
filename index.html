@@ -172,12 +172,7 @@ function App(){
   return(
     <div ref={containerRef} style={{minHeight:"100vh",background:"#fff",overflowY:"auto"}}>
 
-      {/* ── HEADER ── */}
-      <div style={{background:C.navy,padding:"32px 24px",textAlign:"center"}}>
-        <img src={LOGO_IMG} alt="Happy Lobster Chicago" style={{height:70,maxWidth:"80%",objectFit:"contain",display:"block",margin:"0 auto 16px"}}/>
-        <h1 style={{fontFamily:"'Hammersmith One',sans-serif",color:"#fff",fontSize:32,fontWeight:400,letterSpacing:"0.06em",textTransform:"uppercase",margin:"0 0 6px"}}>Party Kits</h1>
-        <p style={{color:C.coral,fontSize:16,fontStyle:"italic",fontWeight:500,margin:0}}>Sourced in Maine. Perfected in the 312.</p>
-      </div>
+
 
       {/* ── PROGRESS ── */}
       <div style={{maxWidth:560,margin:"0 auto",padding:"20px 24px 0"}}>
@@ -196,10 +191,9 @@ function App(){
         {/* ══════ STEP 0: Choose Kits ══════ */}
         {step===0&&(
           <div>
-            <h2 style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:28,color:C.navy,textTransform:"uppercase",letterSpacing:"0.04em",margin:"0 0 4px"}}>Party Kits</h2>
-            <div style={{height:3,background:C.coral,borderRadius:2,margin:"0 0 8px",width:80}}/>
-            <img src={HERO_IMG} alt="Happy Lobster Party Kit with lobster rolls, brioche buns, and butter" style={{width:"100%",borderRadius:12,marginBottom:16,display:"block"}}/>
-            <p style={{fontSize:16,color:C.textMuted,margin:"0 0 24px",lineHeight:1.6,whiteSpace:"pre-line"}}>{"Hosting just got a lot more interesting.\n\nOur Happy Lobster Roll Party Kits include everything you need to build legendary Happy Lobster Rolls at home, the kind of spread people talk about long after the party ends.\n\nNo cooking skills required. Just toast the buns, pile on the lobster, and accept the compliments."}</p>
+            <h2 style={{fontFamily:"'Hammersmith One',sans-serif",fontSize:22,color:C.navy,textTransform:"uppercase",letterSpacing:"0.04em",margin:"0 0 12px"}}>Choose Your Kits</h2>
+            <div style={{height:3,background:C.coral,borderRadius:2,margin:"0 0 16px",width:60}}/>
+            
 
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
               {KITS.map(k=>{
