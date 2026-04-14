@@ -122,8 +122,8 @@ function App(){
         window.parent.postMessage({type:'pk-resize',height:h+40},'*');
         setTimeout(()=>{
           window.parent.postMessage({type:'pk-scroll-top'},'*');
-        },50);
-      },100);
+        },200);
+      },150);
     }
   },[step]);
   useEffect(()=>{
