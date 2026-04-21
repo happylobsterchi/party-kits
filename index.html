@@ -121,7 +121,9 @@ function App(){
       sendH();
       setTimeout(sendH,50);
       setTimeout(sendH,150);
-      setTimeout(()=>{sendH();window.parent.postMessage({type:'pk-step'},'*')},300);
+      setTimeout(sendH,300);
+      setTimeout(sendH,450);
+      setTimeout(()=>{sendH();window.parent.postMessage({type:'pk-step'},'*')},500);
     }
   },[step]);
   useEffect(()=>{
