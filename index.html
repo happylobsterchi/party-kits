@@ -121,7 +121,6 @@ function App(){
       sendH();
       setTimeout(sendH,100);
       setTimeout(sendH,250);
-      setTimeout(()=>{sendH();window.parent.postMessage({type:'pk-scroll-top'},'*')},400);
     }
   },[step]);
   useEffect(()=>{
