@@ -115,9 +115,11 @@ function App(){
   }
 
   useEffect(()=>{
+    window.scrollTo(0,0);
     if(containerRef.current){
-      containerRef.current.scrollTo({top:0,behavior:"instant"});
+      containerRef.current.scrollTo({top:0});
     }
+    window.parent.postMessage({type:'pk-step'},'*');
   },[step]);
 
   // ── STYLES matching Webflow Menu Types template ──
