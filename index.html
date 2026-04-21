@@ -116,24 +116,9 @@ function App(){
 
   useEffect(()=>{
     if(containerRef.current){
-      containerRef.current.scrollTo({top:0});
-      const sendH=()=>{const h=document.getElementById('root').scrollHeight;window.parent.postMessage({type:'pk-resize',height:h+40},'*')};
-      sendH();
-      setTimeout(sendH,50);
-      setTimeout(sendH,150);
-      setTimeout(sendH,300);
-      setTimeout(sendH,450);
-      setTimeout(()=>{sendH();window.parent.postMessage({type:'pk-step'},'*')},500);
+      containerRef.current.scrollTo({top:0,behavior:"instant"});
     }
   },[step]);
-  useEffect(()=>{
-    const resizeObs=new ResizeObserver(()=>{
-      const h=document.getElementById('root').scrollHeight;
-      window.parent.postMessage({type:'pk-resize',height:h+40},'*');
-    });
-    resizeObs.observe(document.getElementById('root'));
-    return ()=>resizeObs.disconnect();
-  },[]);
 
   // ── STYLES matching Webflow Menu Types template ──
   const C={
